@@ -1,0 +1,41 @@
+<?php
+echo('<html>');
+echo('<head><title>Senior Regionals</title></head>');
+echo('<body>');
+
+
+//make connection to the database          	use single '' in php   "" in html
+require ('connect.php');    //Does the same as 'include except stops if it doesn't work
+
+$showScores = 'select name as 'Name', club as 'Club', score as 'Score', dif as 'Dif', app as 'Ap'from scores s, athletes a where pid = id and sid > (select max(sid)-6 from scores)';
+
+//attempt to run the query
+
+$scoresTable = mysql_query($showScores);
+
+//plate up the answer table
+if(!$scoresTable){		//! means not
+	//no answer table
+	echo('<p>No score table, sorry</p>');
+}else{
+	//yay, there was data to display
+	echo '<table border="1" cellpadding="2" cellspacing="0">';
+	echo '<tr><td>Name</td><td>Club</td><td>Score</td><td>Dif</td><td>ap</td>';
+	while (list($name,$club,$score,$dif,$ap)=mysql_fetch_row($scoresTable)){  //variables are the columns
+		//plate up that row
+		echo '<tr>';
+		echo '<td>'.$name.'</td>';
+		echo '<td>'.$club.'</td>';
+		echo '<td>'.$score.'</td>';
+		echo '<td>'.$dif.'</td>';
+		echo '<td>'.$ap.'</td>';
+		echo '<tr>';
+	}
+	echo '</table>';
+}
+
+
+echo('</body>');
+echo('</html>');
+
+?>

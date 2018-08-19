@@ -1,0 +1,74 @@
+
+
+
+
+
+
+delete from scores
+where pid = '$pid'
+and app = '$ap'
+and sid not in(
+	select max(sid)
+	from scores
+	group by pid
+)
+
+delete from scores where sid in(select sid from scores where pid = '$pid' and app = '$ap' and sid not in(select max(sid) from scores group by pid))
+
+create table athletes(
+	id integer auto_increment not null,
+	name varchar(20) not null,
+	club varchar(15) not null,
+	primary key(id)
+)
+
+create table scores(
+	sid integer auto_increment not null,
+	pid integer not null,
+	score decimal(6,3) not null,
+	dif decimal(3,1) not null,
+	app char(2) not null,
+	correction varchar(10),
+	primary key(sid),
+	foreign key(pid) references athletes(id)
+)
+
+insert into athletes (name, club)
+values('X.Rui','BGS'),
+('C.Hooper','BGS'),
+('O.Stack','BGS')
+
+
+insert into scores (pid, score, dif, app)
+values('1','11.55','2.5','RR'),
+('3','13.1','4.3','FX'),
+('2','13.5','4.5','RR')
+
+select name as 'Name', club as 'Club', score as 'Score', dif as 'Dif', app as 'Ap', correction as ''
+from scores s, athletes a
+where pid = id
+and sid > 
+(select max(sid)-6
+from scores)
+order by sid desc
+
+insert into scores(pid, score, dif, app)
+values($pid,$score,$dif,$ap)
+
+
+
+
+
+
+
+
+create table teamD(
+	club varchar(15) not null,
+	deduction decimal(3,1) not null,
+	reason varchar(50) not null,
+	wh3n varchar(10) not null,
+	primary key(club, reason, wh3n),
+	foreign key(club) references athletes(club)
+)
+
+
